@@ -61,9 +61,43 @@ function routes(Book){
 
         book.save()
 
-        return response.json(book)     
+        //return response.json(book)
+        request.book.save((error)=>{
+          if(error){
+            return response.send(error)
+          }
+          return response.json(book)
+        })    
       }
     )
+    .patch((request, response)=>{
+      const {book} = request
+
+      if(request.body._id){
+        delete request.body._id
+      }
+
+      Object.entries(request.body).forEach((item)=>{
+        const key=item[0]
+        const value = item[1]
+
+        book[key] = value
+      })
+      request.book.save((error)=>{
+        if(error){
+          return response.send(error)
+        }
+        return response.json(book)
+      })
+    })
+    .delete((request, response)=>{
+      request.book.remove((error)=>{
+        if(error){
+          return response.send(error)
+        }
+        return response.sendStatus(204)
+      })
+    })
 
   return bookRouter
 }
