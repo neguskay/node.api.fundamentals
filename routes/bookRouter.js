@@ -7,9 +7,7 @@ function routes(Book){
 
   bookRouter.route('/books')
     .post(controller.post)
-    .get(
-      
-    )
+    .get(controller.get)
     bookRouter.use('/books/:bookId', (request, response, next)=> {
       Book.findById(
         request.params.bookId, (error, book)=>{
@@ -27,7 +25,12 @@ function routes(Book){
     bookRouter.route('/books/:bookId')
     .get((request, response)=>{
         const {query} = request
-        response.json(request.book)
+        const bookToReturn = request.book.toJSON() 
+        const genre = request.book.genre.replace(' ', '%20')
+        
+        bookToReturn.links = {}
+        bookToReturn.links.FilterByGenre = `http://${request.headers.host}/api/books/?genre=${genre}`
+        response.json(bookToReturn)
           //response.json(responseToSend)
       }
     )

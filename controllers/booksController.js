@@ -21,13 +21,19 @@ function booksController(Book){
 
   function get(request, response){
     const {query} = request
-    Book.find(
-      query, (error, books)=>{
+    Book.find(query, (error, books)=>{
         if(error){
           return response.send(error)
-        } else{
-          return response.json(books)
-        }
+        } 
+
+        const booksToReturn = books.map((book)=>{
+          const newBook = book.toJSON()
+          newBook.links = {}
+          newBook.links.self = `http://${request.headers.host}/api/books/${book._id}`
+          return newBook
+        })
+
+        return response.json(booksToReturn)
       }
     )
     //response.json(responseToSend)
