@@ -1,32 +1,14 @@
 const express = require('express')
+const booksController = require('../controllers/booksController.js')
 
 function routes(Book){
   const bookRouter = express.Router();
+  const controller = booksController(Book);
+
   bookRouter.route('/books')
-    .post((request, response)=>{
-      const book = new Book(request.body)
-      console.log(`Post Method Body:: ${request.body}`)
-
-      book.save()
-
-      console.log(`Book Object Created:: ${book}`)
-      return response.status(201).json(book)
-    })
+    .post(controller.post)
     .get(
-      (request, response)=>{
-        const {query} = request
-        Book.find(
-          query, (error, books)=>{
-            if(error){
-              return response.send(error)
-            } else{
-              return response.json(books)
-            }
-          }
-        )
- 
-        //response.json(responseToSend)
-      }
+      
     )
     bookRouter.use('/books/:bookId', (request, response, next)=> {
       Book.findById(

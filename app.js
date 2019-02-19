@@ -2,8 +2,15 @@ const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const app = express()
-const dbConnection = mongoose.connect('mongodb://localhost/bookAPI')
+//const dbConnection = mongoose.connect('mongodb://localhost/bookAPI')
 
+if(process.env.ENV === 'Test'){
+  console.log('This is a Test')
+  const dbConnection = mongoose.connect('mongodb://localhost/bookAPI_Test')
+} else{
+  console.log('This is Real Test')
+  const dbConnection = mongoose.connect('mongodb://localhost/bookAPI-prod')
+}
 
 const port = process.env.PORT || 3000;
 
@@ -20,6 +27,6 @@ app.get('/', (request, response)=>{
     response.send("Welcome to Node API")
 })
 
-app.listen(port, ()=>{
+app.server = app.listen(port, ()=>{
     console.log(`listening on port :: ${port}`)
 })
